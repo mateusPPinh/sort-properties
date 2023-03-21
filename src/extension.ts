@@ -5,14 +5,21 @@ import { applyChangesToFile } from './utils/applyChangesToFile';
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
-	let disposable = vscode.commands.registerCommand('props-sort.sortInterfacesAndProps', async () => {
+  let disposable = vscode.commands.registerCommand('props-sort.sortInterfacesAndProps', async () => {
     const content = getActiveEditorContent();
     if (!content) {
       vscode.window.showErrorMessage('No active editor found.');
       return;
     }
 
-    const sortedContent = sortInterfacesAndPropsAlphabetically(content);
+    const activeEditor = vscode.window.activeTextEditor;
+    if (!activeEditor) {
+      vscode.window.showErrorMessage('No active editor found.');
+      return;
+    }
+
+    const fileName = activeEditor.document.fileName;
+    const sortedContent = sortInterfacesAndPropsAlphabetically(content, fileName);
     await applyChangesToFile(sortedContent);
 
     vscode.window.showInformationMessage('Interfaces and properties sorted alphabetically.');
