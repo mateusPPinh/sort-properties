@@ -2,7 +2,7 @@
   "name": "props-sort",
   "displayName": "props-sort",
   "description": "Sort Interfaces and Properties Alphabetically",
-  "publisher": "rawrenete",
+  "publisher": "mateuspinheirop",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.76.0"
@@ -11,6 +11,7 @@
     "Other"
   ],
   "activationEvents": [],
+  "extensionKind": ["workspace"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
