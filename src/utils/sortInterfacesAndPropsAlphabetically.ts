@@ -10,43 +10,39 @@ export function sortInterfacesAndPropsAlphabetically(sourceCode: string): string
 
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
 
-  const transformationContext = {
-    factory: ts.factory,
-    enableEmitNotification: false,
-    enableSubstitution: false,
-    endLexicalEnvironment: () => [],
-    getCompilerOptions: () => ({}),
-    hoistFunctionDeclaration: () => {},
-    hoistVariableDeclaration: () => {},
-    onError: () => {},
-    startLexicalEnvironment: () => {},
+  const transformer: ts.TransformerFactory<ts.SourceFile> = (context) => {
+    const visit: ts.Visitor = (node) => {
+      if (ts.isInterfaceDeclaration(node)) {
+        const sortedMembers = node.members.slice().sort((a, b) => {
+          if (ts.isPropertySignature(a) && ts.isPropertySignature(b)) {
+            const aName = a.name.getText(sourceFile);
+            const bName = b.name.getText(sourceFile);
+            return aName.localeCompare(bName);
+          }
+          return 0;
+        });
+
+        return ts.factory.updateInterfaceDeclaration(
+          node,
+          node.decorators,
+          node.modifiers,
+          node.name,
+          node.typeParameters,
+          node.heritageClauses,
+          sortedMembers
+        );
+      }
+
+      return ts.visitEachChild(node, visit, context);
+    };
+
+    return (sourceFile) => ts.visitNode(sourceFile, visit);
   };
 
-  const visit = (node: ts.Node): ts.Node => {
-    if (ts.isInterfaceDeclaration(node)) {
-      const sortedMembers = node.members.slice().sort((a, b) => {
-        if (ts.isPropertySignature(a) && ts.isPropertySignature(b)) {
-          const aName = a.name.getText(sourceFile);
-          const bName = b.name.getText(sourceFile);
-          return aName.localeCompare(bName);
-        }
-        return 0;
-      });
+  //usar uma função de transformação e passar o contexto que é fornecido
 
-      return ts.factory.updateInterfaceDeclaration(
-        node,
-        node.decorators,
-        node.modifiers,
-        node.name,
-        node.typeParameters,
-        node.heritageClauses,
-        sortedMembers
-      );
-    }
+  const result = ts.transform(sourceFile, [transformer]);
+  const transformedSourceFile = result.transformed[0] as ts.SourceFile;
 
-    return ts.visitEachChild(node, visit, transformationContext);
-  };
-
-  const updatedSourceFile = ts.visitNode(sourceFile, visit);
-  return printer.printNode(ts.EmitHint.Unspecified, updatedSourceFile, sourceFile);
+  return printer.printNode(ts.EmitHint.Unspecified, transformedSourceFile, sourceFile);
 }
