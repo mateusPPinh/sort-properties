@@ -1,7 +1,7 @@
 # Props Sort
 
-[![Version](https://vsmarketplacebadge.apphb.com/version/your-publisher-name.props-sort.svg)](https://marketplace.visualstudio.com/items?itemName=your-publisher-name.props-sort)
-[![Installs](https://vsmarketplacebadge.apphb.com/installs/your-publisher-name.props-sort.svg)](https://marketplace.visualstudio.com/items?itemName=your-publisher-name.props-sort)
+[![Version](https://marketplace.visualstudio.com/items?itemName=your-publisher-name.props-sort)
+[![Installs](https://marketplace.visualstudio.com/items?itemName=your-publisher-name.props-sort)
 
 Props Sort é uma extensão para o Visual Studio Code que permite ordenar automaticamente interfaces e propriedades alfabeticamente em seu código TypeScript.
 
